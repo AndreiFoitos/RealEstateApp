@@ -1,79 +1,60 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { Property, PropertyCreate, PropertyUpdate, EnergyData } from '@/types/property';
 
-if (!API_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not defined");
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-export async function getProperties() {
-  const res = await fetch(`${API_URL}/properties`, {
-    cache: "no-store",
+async function fetchAPI(endpoint: string, options?: RequestInit) {
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch properties");
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || 'API request failed');
   }
 
-  return res.json();
+  return response.json();
 }
 
-export async function getProperty(id: string) {
-  const res = await fetch(`${API_URL}/properties/${id}`, {
-    cache: "no-store",
-  });
+export const propertyAPI = {
+  // Get all properties
+  getAll: async (): Promise<Property[]> => {
+    return fetchAPI('/properties');
+  },
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch property");
-  }
+  // Get single property
+  getById: async (id: string): Promise<Property> => {
+    return fetchAPI(`/properties/${id}`);
+  },
 
-  return res.json();
-}
+  // Create property
+  create: async (data: PropertyCreate): Promise<Property> => {
+    return fetchAPI('/properties', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
 
-export async function createProperty(data: any) {
-  const res = await fetch(`${API_URL}/properties`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+  // Update property
+  update: async (id: string, data: PropertyUpdate): Promise<Property> => {
+    return fetchAPI(`/properties/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
 
-  if (!res.ok) {
-    throw new Error("Failed to create property");
-  }
+  // Delete property
+  delete: async (id: string): Promise<void> => {
+    return fetchAPI(`/properties/${id}`, {
+      method: 'DELETE',
+    });
+  },
 
-  return res.json();
-}
-
-export async function updateProperty(id: string, data: any) {
-  const res = await fetch(`${API_URL}/properties/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to update property");
-  }
-
-  return res.json();
-}
-
-export async function deleteProperty(id: string) {
-  const res = await fetch(`${API_URL}/properties/${id}`, {
-    method: "DELETE",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to delete property");
-  }
-}
-
-export async function getEnergy(id: string) {
-  const res = await fetch(`${API_URL}/properties/${id}/energy`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch energy data");
-  }
-
-  return res.json();
-}
+  // Get energy data
+  getEnergy: async (id: string): Promise<EnergyData> => {
+    return fetchAPI(`/properties/${id}/energy`);
+  },
+};
