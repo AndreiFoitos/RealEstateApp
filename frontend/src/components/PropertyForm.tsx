@@ -10,6 +10,28 @@ interface PropertyFormProps {
   submitLabel: string;
 }
 
+const inputStyle = {
+  width: '100%',
+  backgroundColor: '#0c0e14',
+  border: '1px solid #1e2130',
+  borderRadius: '7px',
+  padding: '10px 14px',
+  color: '#e2e4ec',
+  fontSize: '14px',
+  outline: 'none',
+  fontFamily: 'Inter, sans-serif',
+  transition: 'border-color 0.15s',
+} as React.CSSProperties;
+
+const labelStyle = {
+  display: 'block',
+  fontSize: '12px',
+  fontWeight: 500,
+  color: '#8b90a0',
+  marginBottom: '6px',
+  letterSpacing: '0.02em',
+} as React.CSSProperties;
+
 export default function PropertyForm({ initialData, onSubmit, submitLabel }: PropertyFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<PropertyCreate>({
@@ -20,32 +42,18 @@ export default function PropertyForm({ initialData, onSubmit, submitLabel }: Pro
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [focused, setFocused] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'floor_area_m2' ? parseFloat(value) || 0 : value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: name === 'floor_area_m2' ? parseFloat(value) || 0 : value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validation
-    if (!formData.name.trim()) {
-      setError('Name is required');
-      return;
-    }
-    if (!formData.address.trim()) {
-      setError('Address is required');
-      return;
-    }
-    if (formData.floor_area_m2 <= 0) {
-      setError('Floor area must be greater than 0');
-      return;
-    }
-
+    if (!formData.name.trim()) { setError('Property name is required'); return; }
+    if (!formData.address.trim()) { setError('Address is required'); return; }
+    if (formData.floor_area_m2 <= 0) { setError('Floor area must be greater than 0'); return; }
     try {
       setLoading(true);
       setError(null);
@@ -58,96 +66,128 @@ export default function PropertyForm({ initialData, onSubmit, submitLabel }: Pro
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
+    <form onSubmit={handleSubmit} style={{ maxWidth: '520px' }}>
       {error && (
-        <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div style={{ backgroundColor: '#2a1515', border: '1px solid #5a2020', borderRadius: '7px', padding: '12px 16px', color: '#f87171', fontSize: '13px', marginBottom: '20px' }}>
           {error}
         </div>
       )}
 
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-          Property Name *
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g., Apartment Groningen Center"
-        />
-      </div>
+      <div style={{ backgroundColor: '#0e1018', border: '1px solid #1e2130', borderRadius: '10px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-      <div className="mb-4">
-        <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
-          Property Type *
-        </label>
-        <select
-          id="type"
-          name="type"
-          value={formData.type}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="apartment">Apartment</option>
-          <option value="office">Office</option>
-          <option value="house">House</option>
-        </select>
-      </div>
+        {/* Name */}
+        <div>
+          <label style={labelStyle} htmlFor="name">Property Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            onFocus={() => setFocused('name')}
+            onBlur={() => setFocused(null)}
+            placeholder="e.g. Centrum Apartment"
+            required
+            style={{ ...inputStyle, borderColor: focused === 'name' ? '#d4a843' : '#1e2130' }}
+          />
+        </div>
 
-      <div className="mb-4">
-        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-          Address *
-        </label>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g., Grote Markt 1, Groningen"
-        />
-      </div>
+        {/* Type */}
+        <div>
+          <label style={labelStyle}>Property Type</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+            {(['apartment', 'office', 'house'] as const).map(t => (
+              <label key={t} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '10px 8px',
+                borderRadius: '7px',
+                cursor: 'pointer',
+                border: `1px solid ${formData.type === t ? '#d4a843' : '#1e2130'}`,
+                backgroundColor: formData.type === t ? 'rgba(212, 168, 67, 0.08)' : '#0c0e14',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: formData.type === t ? '#d4a843' : '#8b90a0',
+                textTransform: 'capitalize',
+                transition: 'all 0.15s',
+                userSelect: 'none',
+              }}>
+                <input
+                  type="radio"
+                  name="type"
+                  value={t}
+                  checked={formData.type === t}
+                  onChange={handleChange}
+                  style={{ display: 'none' }}
+                />
+                {t}
+              </label>
+            ))}
+          </div>
+        </div>
 
-      <div className="mb-6">
-        <label htmlFor="floor_area_m2" className="block text-sm font-medium text-gray-700 mb-2">
-          Floor Area (m²) *
-        </label>
-        <input
-          type="number"
-          id="floor_area_m2"
-          name="floor_area_m2"
-          value={formData.floor_area_m2}
-          onChange={handleChange}
-          required
-          min="0"
-          step="0.01"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g., 85.5"
-        />
-      </div>
+        {/* Address */}
+        <div>
+          <label style={labelStyle} htmlFor="address">Address</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            onFocus={() => setFocused('address')}
+            onBlur={() => setFocused(null)}
+            placeholder="e.g. Grote Markt 1, Groningen"
+            required
+            style={{ ...inputStyle, borderColor: focused === 'address' ? '#d4a843' : '#1e2130' }}
+          />
+        </div>
 
-      <div className="flex gap-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Saving...' : submitLabel}
-        </button>
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300"
-        >
-          Cancel
-        </button>
+        {/* Floor area */}
+        <div>
+          <label style={labelStyle} htmlFor="floor_area_m2">Floor Area (m²)</label>
+          <input
+            type="number"
+            id="floor_area_m2"
+            name="floor_area_m2"
+            value={formData.floor_area_m2 || ''}
+            onChange={handleChange}
+            onFocus={() => setFocused('floor_area_m2')}
+            onBlur={() => setFocused(null)}
+            placeholder="e.g. 85"
+            min="0"
+            step="0.01"
+            required
+            style={{ ...inputStyle, borderColor: focused === 'floor_area_m2' ? '#d4a843' : '#1e2130' }}
+          />
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: '10px', paddingTop: '4px' }}>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              flex: 1, padding: '10px', borderRadius: '7px', border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+              backgroundColor: loading ? '#8a6e30' : '#d4a843',
+              color: '#0c0e14', fontSize: '14px', fontWeight: 600,
+            }}
+          >
+            {loading ? 'Saving...' : submitLabel}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            style={{
+              flex: 1, padding: '10px', borderRadius: '7px', cursor: 'pointer',
+              backgroundColor: 'transparent', color: '#8b90a0',
+              border: '1px solid #1e2130', fontSize: '14px', fontWeight: 500,
+            }}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </form>
   );

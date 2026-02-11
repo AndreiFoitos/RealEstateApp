@@ -44,8 +44,13 @@ def delete_property(id: UUID):
 
 @router.get("/properties/{id}/energy")
 def get_energy(id: UUID):
-    return supabase.table("energy_data") \
+    data = supabase.table("energy_data") \
         .select("date,kwh") \
         .eq("property_id", id) \
         .order("date") \
         .execute().data
+    
+    return {
+        "property_id": str(id),
+        "readings": [{"date": r["date"], "kwh_consumed": r["kwh"]} for r in data]
+    }
