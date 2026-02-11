@@ -12,14 +12,23 @@ def create_property(payload: PropertyCreate):
     if not prop.data:
         raise HTTPException(400, "Create failed")
 
-    property_id = prop.data[0]["id"]
-    energy = generate_energy(property_id)
+    property_data = prop.data[0]
+    property_id = property_data["id"]
+    
+    energy = generate_energy(
+        property_id=property_id,
+        floor_area_m2=property_data["floor_area_m2"],
+        year_of_construction=property_data["year_of_construction"],
+        number_of_inhabitants=property_data["number_of_inhabitants"],
+        ceiling_height_m=property_data["ceiling_height_m"],
+        property_type=property_data["type"]
+    )
 
     supabase.table("energy_data").insert([
         {**e, "property_id": property_id} for e in energy
     ]).execute()
 
-    return prop.data[0]
+    return property_data
 
 @router.get("/properties")
 def list_properties():
@@ -35,7 +44,27 @@ def get_property(id: UUID):
 @router.put("/properties/{id}")
 def update_property(id: UUID, payload: PropertyCreate):
     res = supabase.table("properties").update(payload.dict()).eq("id", id).execute()
-    return res.data
+    if not res.data:
+        raise HTTPException(404, "Property not found")
+    
+    property_data = res.data[0]
+    
+    supabase.table("energy_data").delete().eq("property_id", id).execute()
+    
+    energy = generate_energy(
+        property_id=id,
+        floor_area_m2=property_data["floor_area_m2"],
+        year_of_construction=property_data["year_of_construction"],
+        number_of_inhabitants=property_data["number_of_inhabitants"],
+        ceiling_height_m=property_data["ceiling_height_m"],
+        property_type=property_data["type"]
+    )
+    
+    supabase.table("energy_data").insert([
+        {**e, "property_id": str(id)} for e in energy
+    ]).execute()
+    
+    return property_data
 
 @router.delete("/properties/{id}")
 def delete_property(id: UUID):

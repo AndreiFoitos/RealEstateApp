@@ -7,14 +7,14 @@ import PropertyForm from '@/components/PropertyForm';
 export default function NewPropertyPage() {
   return (
     <div>
-      <Link href="/properties" style={{ color: '#5a6070', textDecoration: 'none', fontSize: '13px', display: 'inline-block', marginBottom: '28px' }}>
+      <Link href="/properties" style={{ color: '#5a6070', textDecoration: 'none', fontSize: '15px', display: 'inline-block', marginBottom: '30px' }}>
         ← Properties
       </Link>
-      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '28px', fontWeight: 700, color: '#e2e4ec', marginBottom: '6px', letterSpacing: '-0.02em' }}>
+      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '32px', fontWeight: 700, color: '#e2e4ec', marginBottom: '8px', letterSpacing: '-0.02em' }}>
         Add Property
       </h1>
-      <p style={{ fontSize: '13px', color: '#5a6070', marginBottom: '28px' }}>
-        30 days of energy data will be generated automatically
+      <p style={{ fontSize: '15px', color: '#5a6070', marginBottom: '30px' }}>
+        Energy consumption will be calculated based on property characteristics
       </p>
       <PropertyForm
         onSubmit={async (data) => { await propertyAPI.create(data); }}

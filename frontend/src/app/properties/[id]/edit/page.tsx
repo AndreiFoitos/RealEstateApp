@@ -24,7 +24,7 @@ export default function EditPropertyPage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '120px' }}>
-        <div style={{ width: '28px', height: '28px', border: '2px solid #1e2130', borderTop: '2px solid #d4a843', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+        <div style={{ width: '32px', height: '32px', border: '3px solid #1e2130', borderTop: '3px solid #d4a843', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -33,24 +33,24 @@ export default function EditPropertyPage() {
   if (error || !property) {
     return (
       <div>
-        <div style={{ backgroundColor: '#2a1515', border: '1px solid #5a2020', borderRadius: '8px', padding: '16px 20px', color: '#f87171', marginBottom: '16px' }}>
+        <div style={{ backgroundColor: '#2a1515', border: '1px solid #5a2020', borderRadius: '8px', padding: '18px 22px', color: '#f87171', marginBottom: '18px', fontSize: '15px' }}>
           {error || 'Property not found'}
         </div>
-        <Link href="/properties" style={{ color: '#8b90a0', textDecoration: 'none', fontSize: '13px' }}>Back to properties</Link>
+        <Link href="/properties" style={{ color: '#8b90a0', textDecoration: 'none', fontSize: '15px' }}>Back to properties</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link href={`/properties/${id}`} style={{ color: '#5a6070', textDecoration: 'none', fontSize: '13px', display: 'inline-block', marginBottom: '28px' }}>
+      <Link href={`/properties/${id}`} style={{ color: '#5a6070', textDecoration: 'none', fontSize: '15px', display: 'inline-block', marginBottom: '30px' }}>
         ← {property.name}
       </Link>
-      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '28px', fontWeight: 700, color: '#e2e4ec', marginBottom: '6px', letterSpacing: '-0.02em' }}>
+      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '32px', fontWeight: 700, color: '#e2e4ec', marginBottom: '8px', letterSpacing: '-0.02em' }}>
         Edit Property
       </h1>
-      <p style={{ fontSize: '13px', color: '#5a6070', marginBottom: '28px' }}>
-        Updating details for {property.name}
+      <p style={{ fontSize: '15px', color: '#5a6070', marginBottom: '30px' }}>
+        Energy data will be recalculated when you save changes
       </p>
       <PropertyForm
         initialData={property}

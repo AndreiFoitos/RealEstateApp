@@ -4,6 +4,9 @@ export interface Property {
   address: string;
   type: 'apartment' | 'office' | 'house';
   floor_area_m2: number;
+  year_of_construction: number;
+  number_of_inhabitants: number;
+  ceiling_height_m: number;
   created_at?: string;
 }
 
@@ -12,6 +15,9 @@ export interface PropertyCreate {
   address: string;
   type: 'apartment' | 'office' | 'house';
   floor_area_m2: number;
+  year_of_construction: number;
+  number_of_inhabitants: number;
+  ceiling_height_m: number;
 }
 
 export interface PropertyUpdate extends PropertyCreate {}
