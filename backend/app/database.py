@@ -9,4 +9,3 @@ supabase = create_client(
     os.environ["SUPABASE_SERVICE_ROLE_KEY"],
 )
 
-print("Supabase connected")
