@@ -306,6 +306,22 @@ The backend includes a healthcheck, the frontend container waits for it to pass 
 
 ---
 
+### NOTE: 
+
+When running the project with:
+
+```bash
+docker compose up --build
+```
+
+Docker binds the frontend to port 3000.
+
+If you later start the Next.js app locally (npm run dev) without first stopping Docker, port 3000 will still be in use. Next.js will then switch to port 3001, which breaks the app because the backend and environment configuration expect http://localhost:3000.
+
+Fix: Always stop Docker before running the frontend locally with 
+```bash
+docker compose down
+```
 ## API Reference
 
 All routes are prefixed with `/api`.
