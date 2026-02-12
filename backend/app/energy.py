@@ -15,8 +15,6 @@ def generate_energy(property_id, floor_area_m2, year_of_construction, number_of_
     base_rate = type_multipliers.get(property_type, 0.10)
 
 
-    volume_m3 = floor_area_m2 * ceiling_height_m
-
     current_year = date.today().year
     building_age = current_year - year_of_construction
     
