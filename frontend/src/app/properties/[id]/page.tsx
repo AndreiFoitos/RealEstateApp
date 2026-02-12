@@ -17,8 +17,7 @@ export default function PropertyDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { loadData(); }, [id]);
-
+  useEffect(() => {
   const loadData = async () => {
     try {
       setLoading(true);
@@ -35,6 +34,10 @@ export default function PropertyDetailPage() {
       setLoading(false);
     }
   };
+
+  loadData();
+}, [id]);
+
 
   const handleDelete = async () => {
     if (!confirm('Delete this property? This cannot be undone.')) return;
