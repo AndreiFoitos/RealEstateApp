@@ -135,34 +135,6 @@ Please send us:
 
 ## UPDATES
 
-## Requirements Checklist
-
-### Backend (FastAPI)
-- `POST /properties` – create a new property
-- `GET /properties` – list all properties
-- `GET /properties/{id}` – get a single property
-- `PUT /properties/{id}` – update a property
-- `DELETE /properties/{id}` – delete a property
-- `GET /properties/{id}/energy` – returns simulated energy data
-- Input validation via Pydantic (`floor_area_m2 > 0`, required fields, range checks)
-- Proper HTTP status codes (404 on missing resources, 422 on validation errors)
-- Reasonable project structure (`app/routes/`, `app/schemas.py`, `app/energy.py`)
-
-### Frontend (Next.js)
-- Property list page with name, type, address; links to view/edit/delete
-- Create property form with client-side validation
-- Edit property form pre-filled with existing data
-- Property detail page showing all fields plus energy chart and daily readings table
-- Area chart (Recharts) and summary stats (total, average, peak kWh)
-
-### Nice-to-haves implemented
-- Energy stats: total/average/peak kWh shown on detail page
-- Basic backend tests (pytest) and CI pipeline (GitHub Actions)
-- Docker setup (`docker-compose.yml`, `Dockerfile` for both services)
-
----
-
-## Stack & Decisions
 
 
 ### Energy simulation approach
