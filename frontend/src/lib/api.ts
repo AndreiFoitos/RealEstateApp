@@ -1,4 +1,4 @@
-import { Property, PropertyCreate, PropertyUpdate, EnergyData } from '@/types/property';
+import { Property, PropertyCreate, EnergyData } from '@/types/property';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -39,7 +39,7 @@ export const propertyAPI = {
   },
 
   // Update property
-  update: async (id: string, data: PropertyUpdate): Promise<Property> => {
+  update: async (id: string, data: PropertyCreate): Promise<Property> => {
     return fetchAPI(`/properties/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),

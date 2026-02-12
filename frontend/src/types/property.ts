@@ -20,7 +20,6 @@ export interface PropertyCreate {
   ceiling_height_m: number;
 }
 
-export interface PropertyUpdate extends PropertyCreate {}
 
 export interface EnergyReading {
   date: string;
