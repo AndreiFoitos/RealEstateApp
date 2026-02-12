@@ -6,7 +6,7 @@ from app.energy import generate_energy
 
 router = APIRouter()
 
-@router.post("/properties")
+@router.post("/properties", status_code=201)
 def create_property(payload: PropertyCreate):
     prop = supabase.table("properties").insert(payload.dict()).execute()
     if not prop.data:
