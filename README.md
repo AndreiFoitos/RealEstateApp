@@ -139,12 +139,12 @@ Please send us:
 
 ### Energy simulation approach
 Data is generated when a property is created (and regenerated on update) for the last 30 days. The formula combines:
-- Property type multiplier — offices have a higher base rate than apartments
-- Building age efficiency factor — older buildings use more energy (no modern insulation)
-- Inhabitant factor — uses `sqrt(n)` to model diminishing returns per person
-- Volume factor — ceiling height increases the heated/cooled volume
-- Weekday pattern — offices drop to 40 % on weekends; residential rises slightly
-- Seeded random variation — 15 % noise seeded on `property_id` for reproducibility
+- Property type multiplier: offices have a higher base rate than apartments
+- Building age efficiency factor: older buildings use more energy (no modern insulation)
+- Inhabitant factor: uses `sqrt(n)` to model diminishing returns per person
+- Volume factor: ceiling height increases the heated/cooled volume
+- Weekday pattern: offices drop to 40 % on weekends; residential rises slightly
+- Seeded random variation: 15 % noise seeded on `property_id` for reproducibility
 
 ---
 
@@ -313,9 +313,9 @@ All routes are prefixed with `/api`.
 ## CI/CD
 
 GitHub Actions runs on every push/PR to `main`:
-1. **Backend job** — lints with `ruff`, runs `pytest`
-2. **Frontend job** — runs ESLint and `tsc --noEmit`
-3. **Docker job** (runs after both pass) — builds both images to verify the Dockerfiles are valid
+1. **Backend job**: lints with `ruff`, runs `pytest`
+2. **Frontend job**: runs ESLint and `tsc --noEmit`
+3. **Docker job** (runs after both pass): builds both images to verify the Dockerfiles are valid
 
 ---
 
