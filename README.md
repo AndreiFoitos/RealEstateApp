@@ -77,7 +77,7 @@ A full-stack application for managing real estate objects and viewing energy dat
 - `id`: UUID (primary key)
 - `property_id`: UUID (foreign key)
 - `date`: Date
-- `kwh_consumed`: Float
+- `kwh`: Float
 - `created_at`: Timestamp
 
 ## API Endpoints

@@ -23,7 +23,7 @@ export interface PropertyCreate {
 
 export interface EnergyReading {
   date: string;
-  kwh_consumed: number;
+  kwh: number;
 }
 
 export interface EnergyData {

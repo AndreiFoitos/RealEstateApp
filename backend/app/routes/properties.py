@@ -87,5 +87,5 @@ def get_energy(id: UUID):
 
     return {
         "property_id": str(id),
-        "readings": [{"date": r["date"], "kwh_consumed": r["kwh"]} for r in data]
+        "readings": [{"date": r["date"], "kwh": r["kwh"]} for r in data]
     }

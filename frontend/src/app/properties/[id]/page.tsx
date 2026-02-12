@@ -70,9 +70,9 @@ export default function PropertyDetailPage() {
   }
 
   const readings = energyData?.readings ?? [];
-  const totalKwh = readings.reduce((s, r) => s + r.kwh_consumed, 0);
+  const totalKwh = readings.reduce((s, r) => s + r.kwh, 0);
   const avgKwh = readings.length ? totalKwh / readings.length : 0;
-  const maxKwh = readings.length ? Math.max(...readings.map(r => r.kwh_consumed)) : 0;
+  const maxKwh = readings.length ? Math.max(...readings.map(r => r.kwh)) : 0;
 
   const stats = [
     { label: 'Total — 30 days', value: `${totalKwh.toFixed(1)}`, unit: 'kWh', color: '#d4a843' },
@@ -196,7 +196,7 @@ export default function PropertyDetailPage() {
               </thead>
               <tbody>
                 {readings.map((r, i) => {
-                  const diff = r.kwh_consumed - avgKwh;
+                  const diff = r.kwh - avgKwh;
                   const isHigh = diff > 0;
                   return (
                     <tr key={i} style={{ borderTop: '1px solid #1a1d27' }}>
@@ -204,7 +204,7 @@ export default function PropertyDetailPage() {
                         {new Date(r.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
                       </td>
                       <td style={{ padding: '14px 26px', fontSize: '16px', fontWeight: 500, color: '#e2e4ec' }}>
-                        {r.kwh_consumed.toFixed(2)} kWh
+                        {r.kwh.toFixed(2)} kWh
                       </td>
                       <td style={{ padding: '14px 26px' }}>
                         <span style={{

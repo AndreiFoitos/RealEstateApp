@@ -1,7 +1,5 @@
 'use client';
 
-import type { TooltipProps } from 'recharts';
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { EnergyReading } from '@/types/property';
 
@@ -42,7 +40,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 export default function EnergyChart({ data }: { data: EnergyReading[] }) {
   const chartData = data.map(r => ({
     date: new Date(r.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
-    kWh: parseFloat(r.kwh_consumed.toFixed(2)),
+    kWh: parseFloat(r.kwh.toFixed(2)),
   }));
 
   const interval = Math.max(1, Math.floor(chartData.length / 7));
