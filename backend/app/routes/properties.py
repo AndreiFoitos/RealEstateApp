@@ -50,6 +50,9 @@ def update_property(id: UUID, payload: PropertyCreate):
     if not res.data:
         raise HTTPException(404, "Property not found")
 
+
+    property_data = res.data[0]
+
     supabase.table("energy_data").delete().eq("property_id", property_id).execute()
 
     energy = generate_energy(
@@ -65,6 +68,8 @@ def update_property(id: UUID, payload: PropertyCreate):
         {**e, "property_id": property_id}
         for e in energy
     ]).execute()
+
+    return property_data
 
 
 @router.delete("/properties/{id}")

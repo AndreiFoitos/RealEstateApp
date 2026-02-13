@@ -25,7 +25,7 @@ FAKE_ENERGY = [
 ]
 
 
-def make_supabase_mock(data=None, single=False):
+def make_supabase_mock(data=None):
     """
     Builds a mock that mimics the Supabase client's chained call pattern:
     supabase.table("x").select("*").eq("id", y).execute()
@@ -51,14 +51,14 @@ def make_supabase_mock(data=None, single=False):
 def test_list_properties_returns_200():
     mock = make_supabase_mock(data=[FAKE_PROPERTY])
     with patch("app.routes.properties.supabase", mock):
-        response = client.get("/properties")
+        response = client.get("/api/properties")
     assert response.status_code == 200
 
 
 def test_list_properties_returns_list():
     mock = make_supabase_mock(data=[FAKE_PROPERTY])
     with patch("app.routes.properties.supabase", mock):
-        response = client.get("/properties")
+        response = client.get("/api/properties")
     assert isinstance(response.json(), list)
     assert len(response.json()) == 1
 
@@ -66,15 +66,16 @@ def test_list_properties_returns_list():
 def test_get_property_returns_200():
     mock = make_supabase_mock(data=FAKE_PROPERTY)
     with patch("app.routes.properties.supabase", mock):
-        response = client.get(f"/properties/{FAKE_PROPERTY['id']}")
+        response = client.get(f"/api/properties/{FAKE_PROPERTY['id']}")
     assert response.status_code == 200
 
 
 def test_get_property_returns_404_when_not_found():
     mock = make_supabase_mock(data=None)
     with patch("app.routes.properties.supabase", mock):
-        response = client.get(f"/properties/{FAKE_PROPERTY['id']}")
+        response = client.get(f"/api/properties/{FAKE_PROPERTY['id']}")
     assert response.status_code == 404
+
 
 VALID_PAYLOAD = {
     "name": "Test Apartment",
@@ -86,49 +87,50 @@ VALID_PAYLOAD = {
     "ceiling_height_m": 2.5,
 }
 
+
 def test_create_property_returns_201():
     mock = make_supabase_mock(data=[FAKE_PROPERTY])
     with patch("app.routes.properties.supabase", mock):
-        response = client.post("/properties", json=VALID_PAYLOAD)
+        response = client.post("/api/properties", json=VALID_PAYLOAD)
     assert response.status_code == 201
 
 
 def test_create_property_rejects_negative_floor_area():
     payload = {**VALID_PAYLOAD, "floor_area_m2": -10}
-    response = client.post("/properties", json=payload)
+    response = client.post("/api/properties", json=payload)
     assert response.status_code == 422
 
 
 def test_create_property_rejects_missing_name():
     payload = {k: v for k, v in VALID_PAYLOAD.items() if k != "name"}
-    response = client.post("/properties", json=payload)
+    response = client.post("/api/properties", json=payload)
     assert response.status_code == 422
 
 
 def test_create_property_rejects_invalid_year():
     payload = {**VALID_PAYLOAD, "year_of_construction": 1700}
-    response = client.post("/properties", json=payload)
+    response = client.post("/api/properties", json=payload)
     assert response.status_code == 422
 
 
 def test_delete_property_returns_200():
     mock = make_supabase_mock(data=[FAKE_PROPERTY])
     with patch("app.routes.properties.supabase", mock):
-        response = client.delete(f"/properties/{FAKE_PROPERTY['id']}")
+        response = client.delete(f"/api/properties/{FAKE_PROPERTY['id']}")
     assert response.status_code == 200
 
 
 def test_get_energy_returns_200():
     mock = make_supabase_mock(data=FAKE_ENERGY)
     with patch("app.routes.properties.supabase", mock):
-        response = client.get(f"/properties/{FAKE_PROPERTY['id']}/energy")
+        response = client.get(f"/api/properties/{FAKE_PROPERTY['id']}/energy")
     assert response.status_code == 200
 
 
 def test_get_energy_response_shape():
     mock = make_supabase_mock(data=FAKE_ENERGY)
     with patch("app.routes.properties.supabase", mock):
-        response = client.get(f"/properties/{FAKE_PROPERTY['id']}/energy")
+        response = client.get(f"/api/properties/{FAKE_PROPERTY['id']}/energy")
     body = response.json()
     assert "property_id" in body
     assert "readings" in body
