@@ -38,54 +38,48 @@ def list_properties():
 def get_property(id: UUID):
     res = supabase.table("properties").select("*").eq("id", id).single().execute()
     if not res.data:
-        raise HTTPException(404)
+        raise HTTPException(404,"Property not found")
     return res.data
 
 @router.put("/properties/{id}")
 def update_property(id: UUID, payload: PropertyCreate):
-    res = supabase.table("properties").update(payload.dict()).eq("id", id).execute()
+    property_id = str(id)
+
+    res = supabase.table("properties").update(payload.dict()).eq("id", property_id).execute()
+
     if not res.data:
         raise HTTPException(404, "Property not found")
-    
-    property_data = res.data[0]
-    
-    supabase.table("energy_data").delete().eq("property_id", id).execute()
-    
+
+    supabase.table("energy_data").delete().eq("property_id", property_id).execute()
+
     energy = generate_energy(
-        property_id=id,
-        floor_area_m2=property_data["floor_area_m2"],
-        year_of_construction=property_data["year_of_construction"],
-        number_of_inhabitants=property_data["number_of_inhabitants"],
-        ceiling_height_m=property_data["ceiling_height_m"],
-        property_type=property_data["type"]
+        property_id=property_id,
+        floor_area_m2=payload.floor_area_m2,
+        year_of_construction=payload.year_of_construction,
+        number_of_inhabitants=payload.number_of_inhabitants,
+        ceiling_height_m=payload.ceiling_height_m,
+        property_type=payload.type
     )
-    
+
     supabase.table("energy_data").insert([
-        {**e, "property_id": str(id)} for e in energy
+        {**e, "property_id": property_id}
+        for e in energy
     ]).execute()
-    
-    return property_data
+
 
 @router.delete("/properties/{id}")
 def delete_property(id: UUID):
-    res = supabase.table("properties") \
-        .delete() \
-        .eq("id", id) \
-        .execute()
+    res = supabase.table("properties").delete().eq("id", id).execute()
 
     if not res.data:
-        raise HTTPException(status_code=404, detail="Property not found")
+        raise HTTPException(404,"Property not found")
 
     return {"ok": True}
 
 
 @router.get("/properties/{id}/energy")
 def get_energy(id: UUID):
-    data = supabase.table("energy_data") \
-        .select("date,kwh") \
-        .eq("property_id", id) \
-        .order("date") \
-        .execute().data
+    data = supabase.table("energy_data").select("date,kwh").eq("property_id", id).order("date").execute().data
     
     return {
         "property_id": str(id),

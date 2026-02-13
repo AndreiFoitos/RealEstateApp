@@ -1,7 +1,6 @@
 from datetime import date
 from app.energy import generate_energy
 
-# A reusable base set of arguments so each test only changes what it cares about
 BASE = dict(
     property_id="11111111-1111-1111-1111-111111111111",
     floor_area_m2=100,

@@ -90,7 +90,7 @@ def test_create_property_returns_201():
     mock = make_supabase_mock(data=[FAKE_PROPERTY])
     with patch("app.routes.properties.supabase", mock):
         response = client.post("/properties", json=VALID_PAYLOAD)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 
 def test_create_property_rejects_negative_floor_area():

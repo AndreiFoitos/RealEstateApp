@@ -36,7 +36,7 @@ jobs:
         env:
           SUPABASE_URL: https://placeholder.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: placeholder-key
-        run: pytest tests/ -v --tb=short || echo "No tests found yet"
+        run: pytest tests/ -v --tb=short
 
   frontend:
     name: Frontend (Next.js)
